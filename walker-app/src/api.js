@@ -8,32 +8,62 @@ async function fetchJson(pathname, options = {}) {
   const timeoutMs = options.timeout || 15000;
   const { timeout, ...requestOptions } = options;
 
-  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const controller =
+    typeof AbortController !== 'undefined' ? new AbortController() : null;
+
   const timeoutId = controller
     ? setTimeout(() => controller.abort(), timeoutMs)
     : null;
 
   try {
     const response = await fetch(url, {
+      ...requestOptions,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         ...(requestOptions.headers || {}),
       },
       signal: controller ? controller.signal : undefined,
-      ...requestOptions,
     });
 
-    const data = await response.json().catch(() => null);
-    if (!response.ok) {
-      const error = data?.message || response.statusText || 'Request failed';
-      throw new Error(error);
+    const contentType = response.headers.get('content-type') || '';
+
+    let data = null;
+
+    if (contentType.includes('application/json')) {
+      data = await response.json().catch(() => null);
+    } else {
+      const text = await response.text().catch(() => '');
+
+      data = text
+        ? {
+            message: text.slice(0, 300),
+          }
+        : null;
     }
+
+    if (!response.ok) {
+      throw new Error(
+        data?.message ||
+          response.statusText ||
+          `Request failed with HTTP ${response.status} at ${url}`
+      );
+    }
+
     return data;
   } catch (error) {
     if (error?.name === 'AbortError') {
-      throw new Error('The request timed out. Check your network connection or backend address.');
+      throw new Error(
+        `Request timed out while contacting ${url}. Check the backend address and deployment.`
+      );
     }
+
+    if (error instanceof TypeError) {
+      throw new Error(
+        `Could not connect to ${url}. Confirm that the backend is running and publicly accessible. Original error: ${error.message}`
+      );
+    }
+
     throw error;
   } finally {
     if (timeoutId) {

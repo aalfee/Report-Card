@@ -29,8 +29,11 @@ app.use(cors());
 app.use(express.json());
 app.use('/documents', express.static(path.join(__dirname, 'documents')));
 
-const dbPath = process.env.VERCEL ? path.join('/tmp', 'data.db') : path.join(__dirname, 'data.db');
-const db = new Database(dbPath);
+const dbPath = path.join(__dirname, 'data.db');
+
+const db = hasSupabase
+  ? null
+  : new Database(dbPath);
 
 async function loadDocumentIndex() {
   const raw = await fs.readFile(documentsIndexPath, 'utf8');
@@ -412,14 +415,18 @@ app.get('/api/documents/:id', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  if (!hasSupabase) {
-    initializeDatabase();
-    console.log(`Walker backend with SQLite listening on http://localhost:${PORT}`);
-  } else {
-    console.log(`Walker backend with Supabase listening on http://localhost:${PORT}`);
-  }
-  if (WORKOS_CLIENT_ID && WORKOS_API_KEY) {
-    console.log('WorkOS credentials detected. The backend is ready for future WorkOS integration.');
-  }
-});
+if (!hasSupabase) {
+  initializeDatabase();
+}
+
+if (!hasSupabase) {
+  initializeDatabase();
+}
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Walker backend listening on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
