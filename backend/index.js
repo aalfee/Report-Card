@@ -419,10 +419,6 @@ if (!hasSupabase) {
   initializeDatabase();
 }
 
-if (!hasSupabase) {
-  initializeDatabase();
-}
-
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Walker backend listening on http://localhost:${PORT}`);
@@ -430,3 +426,4 @@ if (require.main === module) {
 }
 
 module.exports = app;
+
