@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.0",
+  "documents": [
+    {
+      "id": "master-001",
+      "title": "ALFIYAY Master Vision",
+      "slug": "alfiyay-master-vision",
+      "category": "master",
+      "subcategory": "strategy",
+      "description": "Core institutional vision, mission, values, and growth direction.",
+      "file": "public/00-master/alfiyay-master-vision.md",
+      "url": "/documents/public/00-master/alfiyay-master-vision.md",
+      "mimeType": "text/markdown",
+      "visibility": "public",
+      "version": "1.0",
+      "status": "active",
+      "tags": [
+        "vision",
+        "strategy"
+      ],
+      "createdAt": "2026-07-27",
+      "updatedAt": "2026-07-27"
+    },
+    {
+      "id": "brand-001",
+      "title": "Brand System Overview",
+      "slug": "brand-system-overview",
+      "category": "brand",
+      "subcategory": "identity",
+      "description": "Brand positioning, voice, visual direction, and usage principles.",
+      "file": "public/01-brand/brand-system-overview.md",
+      "url": "/documents/public/01-brand/brand-system-overview.md",
+      "mimeType": "text/markdown",
+      "visibility": "public",
+      "version": "1.0",
+      "status": "active",
+      "tags": [
+        "brand",
+        "voice"
+      ],
+      "createdAt": "2026-07-27",
+      "updatedAt": "2026-07-27"
+    },
+    {
+      "id": "ops-001",
+      "title": "Document Governance Policy",
+      "slug": "document-governance-policy",
+      "category": "operations",
+      "subcategory": "governance",
+      "description": "Policy for document lifecycle, visibility levels, and secure publication.",
+      "file": "public/02-operations/document-governance-policy.md",
+      "url": "/documents/public/02-operations/document-governance-policy.md",
+      "mimeType": "text/markdown",
+      "visibility": "public",
+      "version": "1.0",
+      "status": "active",
+      "tags": [
+        "policy",
+        "governance"
+      ],
+      "createdAt": "2026-07-27",
+      "updatedAt": "2026-07-27"
+    }
+  ]
+}

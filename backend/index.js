@@ -1,3 +1,4 @@
+const fs = require('node:fs/promises');
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
@@ -11,6 +12,7 @@ const PORT = process.env.PORT || 4000;
 const JWT_SECRET = process.env.JWT_SECRET || 'replace-with-a-strong-secret';
 const ADMIN_SECRET = process.env.ADMIN_SECRET || 'replace-with-admin-secret';
 const CLIENT_API_KEY = process.env.CLIENT_API_KEY || 'replace-with-client-api-key';
+const documentsIndexPath = path.join(__dirname, 'data', 'documents.json');
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
@@ -25,9 +27,15 @@ const WORKOS_DOMAIN = process.env.WORKOS_DOMAIN;
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/documents', express.static(path.join(__dirname, 'documents')));
 
 const dbPath = process.env.VERCEL ? path.join('/tmp', 'data.db') : path.join(__dirname, 'data.db');
 const db = new Database(dbPath);
+
+async function loadDocumentIndex() {
+  const raw = await fs.readFile(documentsIndexPath, 'utf8');
+  return JSON.parse(raw);
+}
 
 function initializeDatabase() {
   db.prepare(`
@@ -373,6 +381,34 @@ app.get('/api/reports/clients/:clientEmail', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error fetching reports' });
+  }
+});
+
+app.get('/api/documents', async (req, res) => {
+  try {
+    const index = await loadDocumentIndex();
+    const documents = (index.documents || []).filter((doc) => doc.visibility === 'public' && doc.status === 'active');
+    res.json({ schemaVersion: index.schemaVersion || '1.0', documents });
+  } catch (error) {
+    console.error('documents index error:', error);
+    res.status(500).json({ message: 'Unable to load document index' });
+  }
+});
+
+app.get('/api/documents/:id', async (req, res) => {
+  try {
+    const index = await loadDocumentIndex();
+    const document = (index.documents || []).find((doc) => doc.id === req.params.id);
+    if (!document) {
+      return res.status(404).json({ message: 'Document not found' });
+    }
+
+    const filePath = path.join(__dirname, document.file);
+    const content = await fs.readFile(filePath, 'utf8');
+    res.json({ document, content });
+  } catch (error) {
+    console.error('document read error:', error);
+    res.status(500).json({ message: 'Unable to load document content', details: String(error) });
   }
 });
 

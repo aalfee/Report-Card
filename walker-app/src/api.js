@@ -104,6 +104,20 @@ export async function getWalks(token) {
   });
 }
 
+export async function getDocuments() {
+  return fetchJson('/api/documents', {
+    method: 'GET',
+    timeout: 15000,
+  });
+}
+
+export async function getDocumentById(documentId) {
+  return fetchJson(`/api/documents/${documentId}`, {
+    method: 'GET',
+    timeout: 15000,
+  });
+}
+
 export async function getStoredSession() {
   return readPersistedSession();
 }

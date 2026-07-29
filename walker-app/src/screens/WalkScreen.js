@@ -337,6 +337,9 @@ const handleCamera = async () => {
         <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('History', { token })}>
           <Text style={styles.secondaryText}>View Walk History</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Documents')}>
+          <Text style={styles.secondaryText}>Browse Documents</Text>
+        </TouchableOpacity>
         <View style={styles.eventRow}>
           <TouchableOpacity style={styles.eventButton} onPress={() => addEvent('pee')} disabled={!isWalking}>
             <Text style={styles.controlText}>Pee</Text>
