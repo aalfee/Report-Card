@@ -1,66 +1,42 @@
-import React, { useState } from 'react';
-import eventData from '../data/event-checklist.json';
-
-const ChecklistDisplay = () => {
-  const [checklist, setChecklist] = useState(eventData);
-
-  const toggleTask = (phase, taskId) => {
-    setChecklist(prev => ({
-      ...prev,
-      checklist: {
-        ...prev.checklist,
-        [phase]: {
-          ...prev.checklist[phase],
-          tasks: prev.checklist[phase].tasks.map(task =>
-            task.id === taskId ? { ...task, status: task.status === 'done' ? 'pending' : 'done' } : task
-          )
-        }
-      }
-    }));
-  };
-
-  return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>{eventData.eventName} Checklist</h1>
-      <p>📍 {eventData.location} | 🎫 ${eventData.tickets}</p>
-      
-      {Object.entries(checklist.checklist).map(([phaseKey, phase]) => (
-        <div key={phaseKey} style={{ marginBottom: '30px' }}>
-          <h2>{phase.name}</h2>
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            {phase.tasks.map(task => (
-              <li key={task.id} style={{ 
-                padding: '8px', 
-                margin: '4px 0', 
-                background: task.status === 'done' ? '#d4edda' : '#f8f9fa',
-                borderRadius: '4px',
-                display: 'flex',
-                alignItems: 'center'
-              }}>
-                <input 
-                  type="checkbox" 
-                  checked={task.status === 'done'}
-                  onChange={() => toggleTask(phaseKey, task.id)}
-                  style={{ marginRight: '10px' }}
-                />
-                <span>{task.description}</span>
-                <small style={{ marginLeft: '10px', color: '#6c757d' }}>({task.reference})</small>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-      
-      <div style={{ marginTop: '30px', padding: '15px', background: '#fff3cd', borderRadius: '4px' }}>
-        <strong>⚠️ Critical Risks to Monitor:</strong>
-        <ul>
-          {eventData.riskSummary.criticalRisksAbove5Percent.map(risk => (
-            <li key={risk}>{risk}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-};
-
-export default ChecklistDisplay;
+{
+  "eventName": "Elevated Studio Launch",
+  "eventDate": "[Specify Date]",
+  "location": "Queens, NY",
+  "partner": "Forest Chills",
+  "checklist": {
+    "preEventSetup": {
+      "name": "Pre-Event Setup (1+ Week Prior)",
+      "tasks": [
+        { "id": "PS1", "description": "Confirm supply order (paints, brushes) with primary and backup supplier.", "status": "pending", "reference": "Mitigation: Supply Shortage" },
+        { "id": "PS2", "description": "Confirm venue booking and secure backup location.", "status": "pending", "reference": "Mitigation: Venue Issues" },
+        { "id": "PS3", "description": "Review and update insurance coverage for cannabis compliance and participant safety.", "status": "pending", "reference": "Update: Insurance Requirements" },
+        { "id": "PS4", "description": "Draft and schedule pre-event survey to gather dietary restrictions & allergies.", "status": "pending", "reference": "Mitigation: Participant Allergies" },
+        { "id": "PS5", "description": "Send reminder email to guests (48 hours prior) with event details, safety guidelines, and waiver.", "status": "pending", "reference": "Mitigation: Guest No-Show" }
+      ]
+    },
+    "dayOfEvent": {
+      "name": "Day-of-Event Execution (Timeline-Based)",
+      "tasks": [
+        { "id": "DE1", "description": "Test all technical equipment (projector, speakers) 1 hour before start.", "status": "pending", "reference": "Timeline: 0:00 & Mitigation: Technical Issues" },
+        { "id": "DE2", "description": "Set up check-in station with tickets, name tags, and welcome materials.", "status": "pending", "reference": "Timeline: 0:00 - 0:15" },
+        { "id": "DE3", "description": "Prepare and display painting materials with clear safety guidelines.", "status": "pending", "reference": "Timeline: 0:45 - 1:00" },
+        { "id": "DE4", "description": "Ensure first aid kit and spill cleanup materials are readily accessible.", "status": "pending", "reference": "Mitigation: Safety Incident" },
+        { "id": "DE5", "description": "Facilitate the 3-hour painting session per the minute-by-minute agenda.", "status": "pending", "reference": "Timeline: Full Schedule" },
+        { "id": "DE6", "description": "Manage breaks, refreshments, and maintain a welcoming atmosphere.", "status": "pending", "reference": "Timeline: 1:30 - 1:45" }
+      ]
+    },
+    "postEventWrapUp": {
+      "name": "Post-Event Wrap-Up & Follow-Up",
+      "tasks": [
+        { "id": "PW1", "description": "Collect and inventory all remaining materials, noting any shortages.", "status": "pending", "reference": "Timeline: 3:00 - 3:15" },
+        { "id": "PW2", "description": "Distribute feedback survey link to all guests via email.", "status": "pending", "reference": "Update: Customer Emails" },
+        { "id": "PW3", "description": "Clean and restore the venue to its original condition.", "status": "pending", "reference": "Update: Checklists" },
+        { "id": "PW4", "description": "Review all risk probabilities and update mitigation plans for future events.", "status": "pending", "reference": "Final Review: Continuous Improvement" }
+      ]
+    }
+  },
+  "riskSummary": {
+    "criticalRisksAbove5Percent": ["Guest No-Show (20%)", "Supply Shortage (15%)", "Safety Incident (10%)", "Low Engagement (10%)"],
+    "mitigationReviewRequired": true
+  }
+}
