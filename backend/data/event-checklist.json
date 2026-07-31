@@ -1,0 +1,66 @@
+import React, { useState } from 'react';
+import eventData from '../data/event-checklist.json';
+
+const ChecklistDisplay = () => {
+  const [checklist, setChecklist] = useState(eventData);
+
+  const toggleTask = (phase, taskId) => {
+    setChecklist(prev => ({
+      ...prev,
+      checklist: {
+        ...prev.checklist,
+        [phase]: {
+          ...prev.checklist[phase],
+          tasks: prev.checklist[phase].tasks.map(task =>
+            task.id === taskId ? { ...task, status: task.status === 'done' ? 'pending' : 'done' } : task
+          )
+        }
+      }
+    }));
+  };
+
+  return (
+    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+      <h1>{eventData.eventName} Checklist</h1>
+      <p>📍 {eventData.location} | 🎫 ${eventData.tickets}</p>
+      
+      {Object.entries(checklist.checklist).map(([phaseKey, phase]) => (
+        <div key={phaseKey} style={{ marginBottom: '30px' }}>
+          <h2>{phase.name}</h2>
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            {phase.tasks.map(task => (
+              <li key={task.id} style={{ 
+                padding: '8px', 
+                margin: '4px 0', 
+                background: task.status === 'done' ? '#d4edda' : '#f8f9fa',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center'
+              }}>
+                <input 
+                  type="checkbox" 
+                  checked={task.status === 'done'}
+                  onChange={() => toggleTask(phaseKey, task.id)}
+                  style={{ marginRight: '10px' }}
+                />
+                <span>{task.description}</span>
+                <small style={{ marginLeft: '10px', color: '#6c757d' }}>({task.reference})</small>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      
+      <div style={{ marginTop: '30px', padding: '15px', background: '#fff3cd', borderRadius: '4px' }}>
+        <strong>⚠️ Critical Risks to Monitor:</strong>
+        <ul>
+          {eventData.riskSummary.criticalRisksAbove5Percent.map(risk => (
+            <li key={risk}>{risk}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default ChecklistDisplay;
